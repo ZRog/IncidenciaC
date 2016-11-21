@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ubicacionIncidencia">Ubicación de la incidencia</string>
+    <string name="descripcionProblema">Descripción de la incidencia</string>
+    <string name="reportarIncidencia">Reportar Incidencia</string>
+    <string name="mensajeIncResuelta">¿La incidencia ha sido resuelta? Pulsa el botón si es así</string>
+    <string name="enviarIncidencia">Enviar</string>
+    <string name="motivoReporte">Motivo del reporte</string>
+    <string name="escribeMotivo">Escribe el motivo aquí</string>
+    <string name="reporteEnviado">Reporte enviado. Gracias por su colaboración.</string>
+</resources>
