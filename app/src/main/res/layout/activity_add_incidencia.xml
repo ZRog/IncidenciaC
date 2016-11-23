@@ -30,6 +30,7 @@
                 android:layout_gravity="center"
                 android:id="@+id/tomarFoto"/>
             <EditText
+                android:id="@+id/input_ubicacion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="@string/ubicacionIncidencia"
@@ -39,6 +40,7 @@
                 />
 
             <EditText
+                android:id="@+id/input_descripcion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="@string/descripcionProblema"
@@ -62,7 +64,8 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
                 android:theme="@style/BotonRaised"
-                android:text="@string/enviarIncidencia"/>
+                android:text="@string/enviarIncidencia"
+                android:onClick="subirDatosDB"/>
 
         </LinearLayout>
     </RelativeLayout>

@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.rogport.incidenciaciudadano.R;
 import com.google.android.gms.appindexing.Action;
@@ -33,6 +34,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApi;
+    private Location ultimaLoc;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -156,12 +158,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            Location ultimaLoc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApi);
-            double latitude = ultimaLoc.getLatitude();
-            double longitude = ultimaLoc.getLongitude();
-            LatLng posicion = new LatLng(latitude,longitude);
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(posicion));
-            mMap.addMarker(new MarkerOptions().position(posicion).title("YOU ARE HERE, WE NOT"));
+            ultimaLoc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApi);
+            if(ultimaLoc != null) {
+                double latitude = ultimaLoc.getLatitude();
+                double longitude = ultimaLoc.getLongitude();
+                LatLng posicion = new LatLng(latitude, longitude);
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(posicion));
+                mMap.addMarker(new MarkerOptions().position(posicion).title("YOU ARE HERE, WE NOT"));
+            }
+            else{
+                Toast.makeText(getApplicationContext(),"Imposible to connect",Toast.LENGTH_LONG).show();
+            }
 
             return;
         }

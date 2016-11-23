@@ -1,20 +1,26 @@
 package com.example.rogport.incidenciaciudadano;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
+
 /**
  * Created by RogPort on 20/11/2016.
  */
 
 public class Incidencia {
 
-    private int id,imagen;
+    private int id;
+    private String imagen;
     private String ubicacion,descripcion;
 
-    public Incidencia(int id, int imagen, String ubi, String desc) {
+    public Incidencia(int id, String imagen, String ubi, String desc) {
         this.id = id;
         this.imagen = imagen;
         this.ubicacion = ubi;
         this.descripcion = desc;
     }
+
+    public Incidencia(){}
 
     public String getDescripcion() {
         return descripcion;
@@ -32,11 +38,11 @@ public class Incidencia {
         this.id = id;
     }
 
-    public int getImagen() {
+    public String getImagen() {
         return imagen;
     }
 
-    public void setImagen(int imagen) {
+    public void setImagen(String imagen) {
         this.imagen = imagen;
     }
 
