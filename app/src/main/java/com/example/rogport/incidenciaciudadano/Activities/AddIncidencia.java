@@ -10,6 +10,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -35,12 +37,13 @@ import java.io.ByteArrayOutputStream;
 
 public class AddIncidencia extends AppCompatActivity {
 
-    int ID;
+    int ID,size;
     ImageView tomarFoto;
     EditText ubicacion,descripcion;
     public static final int REQUEST_CAPTURE = 1;
     private DatabaseReference mDatabase;
     private String url;
+    private boolean hechoFoto = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,7 @@ public class AddIncidencia extends AppCompatActivity {
 
         tomarFoto = (ImageView) findViewById(R.id.tomarFoto);
         ubicacion = (EditText) findViewById(R.id.input_ubicacion);
+
         descripcion = (EditText) findViewById(R.id.input_descripcion);
         tomarFoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,12 +79,29 @@ public class AddIncidencia extends AppCompatActivity {
             Bundle extras = data.getExtras();
             Bitmap foto = (Bitmap) extras.get("data");
             tomarFoto.setImageBitmap(foto);
+            hechoFoto = true;
         }
     }
 
-    public void subirDatosDB(View v){
+    public void subirDatosDB(View v) {
+        String ubi = ubicacion.getText().toString();
+        String desc = descripcion.getText().toString();
+        if (!ubi.matches("") && !desc.matches("") && hechoFoto){
+            Log.d("DESC",desc);
+            Log.d("UBI",ubi);
+            DatabaseReference refSize = FirebaseDatabase.getInstance().getReference("size");
+            DatabaseReference refID2 = FirebaseDatabase.getInstance().getReference("ID");
+            refSize.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                size = Integer.parseInt(dataSnapshot.getValue().toString());
+            }
 
-        DatabaseReference refID2 = FirebaseDatabase.getInstance().getReference("ID");
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         refID2.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -94,14 +115,14 @@ public class AddIncidencia extends AppCompatActivity {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 StorageReference idRef = storageRef.child(String.valueOf(ID));
-                Log.d("AVISAZO",String.valueOf(ID));
+                Log.d("AVISAZO", String.valueOf(ID));
                 byte[] data1 = baos.toByteArray();
                 UploadTask uploadTask1 = idRef.putBytes(data1);
                 uploadTask1.addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
                         // Handle unsuccessful uploads
-                        Toast.makeText(getApplicationContext(),exception.toString(),Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), exception.toString(), Toast.LENGTH_LONG).show();
                     }
                 }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -109,9 +130,10 @@ public class AddIncidencia extends AppCompatActivity {
                         // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
                         url = downloadUrl.toString();
-                        Incidencia incidencia = new Incidencia(ID,url,ubicacion.getText().toString(),descripcion.getText().toString());
+                        Incidencia incidencia = new Incidencia(ID, url, ubicacion.getText().toString(), descripcion.getText().toString());
                         mDatabase.child("Incidencias").child(String.valueOf(ID)).setValue(incidencia);
-                        mDatabase.child("ID").setValue(ID+1);
+                        mDatabase.child("ID").setValue(ID + 1);
+                        mDatabase.child("size").setValue(size + 1);
                         finish();
                     }
                 });
@@ -122,7 +144,11 @@ public class AddIncidencia extends AppCompatActivity {
                 //
             }
         });
-
-
+    hechoFoto = false;
+            Toast.makeText(getApplicationContext(),getResources().getString(R.string.incidenciaSend),Toast.LENGTH_SHORT).show();
+    }
+        else {
+            Toast.makeText(getApplicationContext(),getResources().getString(R.string.faltanCampos),Toast.LENGTH_SHORT).show();
+        }
     }
 }

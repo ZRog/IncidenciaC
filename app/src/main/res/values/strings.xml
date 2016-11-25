@@ -9,4 +9,6 @@
     <string name="motivoReporte">Reason for reporting</string>
     <string name="escribeMotivo">Write your reason here</string>
     <string name="reporteEnviado">Report sended. Thank you for your colaboration.</string>
+    <string name="faltanCampos">You cannot send empty fields</string>
+    <string name="incidenciaSend">Your incidence has been sended</string>
 </resources>

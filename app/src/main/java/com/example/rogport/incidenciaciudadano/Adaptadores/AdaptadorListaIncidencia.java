@@ -60,6 +60,10 @@ public class AdaptadorListaIncidencia extends RecyclerView.Adapter<AdaptadorList
                VerIncidencia.idImagen = Uri.parse(incidencia.getImagen());
                 Intent i = new Intent(cont, VerIncidencia.class);
                 i.putExtra("imagen",incidencia.getImagen());
+                i.putExtra("id",incidencia.getId());
+                i.putExtra("ubicacion",incidencia.getUbicacion());
+                i.putExtra("descripcion",incidencia.getDescripcion());
+                i.putExtra("likes",incidencia.getLikes());
                cont.startActivity(i);
             }
         });

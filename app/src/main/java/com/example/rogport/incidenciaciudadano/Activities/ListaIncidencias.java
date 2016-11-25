@@ -1,5 +1,6 @@
 package com.example.rogport.incidenciaciudadano.Activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,7 +28,7 @@ public class ListaIncidencias extends AppCompatActivity {
 
     public static ArrayList<Incidencia> incidencias;
     private RecyclerView listaIncidencias;
-    private int ID;
+    private int ID,likes,size;
     private String ubicacion,descripcion,id,imagen;
     private String[] valores;
 
@@ -60,43 +61,65 @@ public class ListaIncidencias extends AppCompatActivity {
         listaIncidencias.setAdapter(adaptador);
     }
     public void inicializarListaIncidencias(){
-        DatabaseReference refID = FirebaseDatabase.getInstance().getReference("ID");
-         refID.addListenerForSingleValueEvent(new ValueEventListener() {
+        final DatabaseReference refID = FirebaseDatabase.getInstance().getReference("ID");
+        DatabaseReference refSize = FirebaseDatabase.getInstance().getReference("size");
+        refSize.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                ID = Integer.parseInt(dataSnapshot.getValue().toString());
-                if(ID!=0){
-                    DatabaseReference refIncidencias = FirebaseDatabase.getInstance().getReference("Incidencias");
-                    for(int i=0;i<ID;i++) {
-                        DatabaseReference refIncidencia = refIncidencias.child(String.valueOf(i));
+                size = Integer.parseInt(dataSnapshot.getValue().toString());
+                refID.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        ID = Integer.parseInt(dataSnapshot.getValue().toString());
+                        if(size==0) {
+                            ID = 0;
+                            refID.setValue(0);
+                        }
+                        if(ID!=0) {
+                            if (size > 0) {
+                                DatabaseReference refIncidencias = FirebaseDatabase.getInstance().getReference("Incidencias");
+                                for (int i = 0; i < ID; i++) {
+                                    DatabaseReference refIncidencia = refIncidencias.child(String.valueOf(i));
+                                    refIncidencia.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.getValue() != null) {
+                                                ubicacion = (String) dataSnapshot.child("ubicacion").getValue();
+                                                descripcion = (String) dataSnapshot.child("descripcion").getValue();
+                                                id = String.valueOf(dataSnapshot.child("id").getValue());
+                                                imagen = (String) dataSnapshot.child("imagen").getValue();
+                                                likes = Integer.parseInt(dataSnapshot.child("likes").getValue().toString());
+                                                Incidencia incidencia = new Incidencia();
+                                                incidencia.setId(Integer.parseInt(id));
+                                                incidencia.setImagen(imagen);
+                                                incidencia.setDescripcion(descripcion);
+                                                incidencia.setUbicacion(ubicacion);
+                                                incidencia.setLikes(likes);
 
-                        refIncidencia.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                ubicacion = (String)dataSnapshot.child("ubicacion").getValue();
-                                descripcion = (String)dataSnapshot.child("descripcion").getValue();
-                                id = String.valueOf(dataSnapshot.child("id").getValue());
-                                imagen = (String)dataSnapshot.child("imagen").getValue();
-                                Incidencia incidencia = new Incidencia();
-                                incidencia.setId(Integer.parseInt(id));
-                                incidencia.setImagen(imagen);
-                                incidencia.setDescripcion(descripcion);
-                                incidencia.setUbicacion(ubicacion);
+                                                incidencias.add(incidencia);
+                                                inicializarAdaptador();
+                                            }
+                                        }
 
-                                incidencias.add(incidencia);
-                                inicializarAdaptador();
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+
+                                    });
+
+
+                                }
+
                             }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-
-
+                        }
                     }
 
-                }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override
@@ -104,8 +127,16 @@ public class ListaIncidencias extends AppCompatActivity {
 
             }
         });
+
         }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Intent refresco = getIntent();
+        finish();
+        startActivity(refresco);
+    }
 }
 
 

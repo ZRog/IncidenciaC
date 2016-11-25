@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_ver_incidencia"
@@ -12,6 +9,12 @@
 
     <include android:id="@+id/app_bar"
         layout="@layout/app_bar"></include>
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/app_bar">
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,7 +45,6 @@
             android:id="@+id/textoLocalizacion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Calle de la Piruleta"
             android:layout_gravity="center"
             android:layout_centerInParent="true"
             android:layout_below="@id/tituloLocalizacion"
@@ -61,7 +63,6 @@
             android:id="@+id/textoDescripcion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Caca en el banco"
             android:layout_gravity="center"
             android:textAlignment="center"
             android:layout_centerInParent="true"
@@ -105,8 +106,9 @@
             android:layout_marginTop="5dp"
             android:theme="@style/BotonRaised"
             android:layout_below="@+id/tituloResuelta"
-            android:layout_centerInParent="true"/>
+            android:layout_centerInParent="true"
+            android:onClick="darLike"/>
 
     </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>
-</ScrollView>

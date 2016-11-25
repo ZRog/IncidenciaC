@@ -9,7 +9,7 @@ import android.net.Uri;
 
 public class Incidencia {
 
-    private int id;
+    private int id,likes;
     private String imagen;
     private String ubicacion,descripcion;
 
@@ -18,6 +18,15 @@ public class Incidencia {
         this.imagen = imagen;
         this.ubicacion = ubi;
         this.descripcion = desc;
+        this.likes = 0;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 
     public Incidencia(){}
