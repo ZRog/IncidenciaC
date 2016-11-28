@@ -12,4 +12,5 @@
     <string name="faltanCampos">You cannot send empty fields</string>
     <string name="incidenciaSend">Your incidence has been sended</string>
     <string name="disteLike">You already colaborated on this incidence</string>
+    <string name="calleInvalida">Wrong street</string>
 </resources>

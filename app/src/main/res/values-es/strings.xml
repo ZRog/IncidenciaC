@@ -13,4 +13,5 @@
     <string name="faltanCampos">No puedes dejar campos vacíos</string>
     <string name="incidenciaSend">Su incidencia ha sido enviada</string>
     <string name="disteLike">Ya colaboraste con esta incidencia</string>
+    <string name="calleInvalida">Calle erronea</string>
 </resources>

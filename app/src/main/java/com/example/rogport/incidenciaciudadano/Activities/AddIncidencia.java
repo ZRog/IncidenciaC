@@ -57,9 +57,10 @@ public class AddIncidencia extends AppCompatActivity implements GoogleApiClient.
     public static final int REQUEST_CAPTURE = 1;
     private DatabaseReference mDatabase;
     private String url;
-    private boolean hechoFoto = false;
+    private boolean hechoFoto = false, calleInv = false;
     GoogleApiClient mGoogleApiClient;
     Geocoder geocoder;
+    private String city;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +91,7 @@ public class AddIncidencia extends AppCompatActivity implements GoogleApiClient.
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -111,8 +113,6 @@ public class AddIncidencia extends AppCompatActivity implements GoogleApiClient.
     public void obtenerUbi(View v) throws IOException {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Location ultimaLoc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            double latitude = ultimaLoc.getLatitude();
-            double longitude = ultimaLoc.getLongitude();
             String Calle = geocoder.getFromLocation(ultimaLoc.getLatitude(), ultimaLoc.getLongitude(), 1).get(0).getAddressLine(0).toString();
             ubicacion.setText(Calle);
             //LatLng latlong = new LatLng(geocoder.getFromLocationName("Carrer Cervantes,Badalona",1).get(0).getLatitude(),geocoder.getFromLocationName("Carrer Cervantes,Badalona",1).get(0).getLongitude());
@@ -123,55 +123,73 @@ public class AddIncidencia extends AppCompatActivity implements GoogleApiClient.
         }
 
     }
+
     public void subirDatosDB(View v) {
         String ubi = ubicacion.getText().toString();
         String desc = descripcion.getText().toString();
-        if (!ubi.matches("") && !desc.matches("") && hechoFoto){
+        if (!ubi.matches("") && !desc.matches("") && hechoFoto) {
             DatabaseReference refSize = FirebaseDatabase.getInstance().getReference("size");
             DatabaseReference refID2 = FirebaseDatabase.getInstance().getReference("ID");
             refSize.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                size = Integer.parseInt(dataSnapshot.getValue().toString());
-            }
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    size = Integer.parseInt(dataSnapshot.getValue().toString());
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
-        refID2.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                ID = Integer.parseInt(dataSnapshot.getValue().toString());
-                FirebaseStorage storage = FirebaseStorage.getInstance();
-                StorageReference storageRef = storage.getReferenceFromUrl("gs://incidenciaciudadano.appspot.com");
-                StorageReference bancoImagesRef = storageRef.child(String.valueOf(ID));
-                tomarFoto.setDrawingCacheEnabled(true);
-                tomarFoto.buildDrawingCache();
-                Bitmap bitmap = tomarFoto.getDrawingCache();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                StorageReference idRef = storageRef.child(String.valueOf(ID));
-                byte[] data1 = baos.toByteArray();
-                UploadTask uploadTask1 = idRef.putBytes(data1);
-                uploadTask1.addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle unsuccessful uploads
-                        Toast.makeText(getApplicationContext(), exception.toString(), Toast.LENGTH_LONG).show();
-                    }
-                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                        url = downloadUrl.toString();
-                        Incidencia incidencia = new Incidencia(ID, url, ubicacion.getText().toString(), descripcion.getText().toString());
-                        mDatabase.child("Incidencias").child(String.valueOf(ID)).setValue(incidencia);
-                        mDatabase.child("ID").setValue(ID + 1);
-                        mDatabase.child("size").setValue(size + 1);
-                        finish();
+                }
+            });
+            refID2.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    ID = Integer.parseInt(dataSnapshot.getValue().toString());
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                    StorageReference storageRef = storage.getReferenceFromUrl("gs://incidenciaciudadano.appspot.com");
+                    StorageReference bancoImagesRef = storageRef.child(String.valueOf(ID));
+                    tomarFoto.setDrawingCacheEnabled(true);
+                    tomarFoto.buildDrawingCache();
+                    Bitmap bitmap = tomarFoto.getDrawingCache();
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    StorageReference idRef = storageRef.child(String.valueOf(ID));
+                    byte[] data1 = baos.toByteArray();
+                    UploadTask uploadTask1 = idRef.putBytes(data1);
+                    uploadTask1.addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle unsuccessful uploads
+                            Toast.makeText(getApplicationContext(), exception.toString(), Toast.LENGTH_LONG).show();
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                            Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                            url = downloadUrl.toString();
+                            try {
+                                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                }
+                            Location ultimaLoc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                            city = geocoder.getFromLocation(ultimaLoc.getLatitude(), ultimaLoc.getLongitude(), 1).get(0).getLocality().toString();
+                            if(geocoder.getFromLocationName(ubicacion.getText().toString() + ", " + city,1).size()==0){
+                                    calleInv=true;
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        if(!calleInv) {
+                            Incidencia incidencia = new Incidencia(ID, url, ubicacion.getText().toString(), descripcion.getText().toString());
+                            mDatabase.child("Incidencias").child(String.valueOf(ID)).setValue(incidencia);
+                            mDatabase.child("ID").setValue(ID + 1);
+                            mDatabase.child("size").setValue(size + 1);
+                            Toast.makeText(getApplicationContext(),getResources().getString(R.string.incidenciaSend),Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                        else
+                            Toast.makeText(AddIncidencia.this,getResources().getString(R.string.calleInvalida),Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -182,7 +200,7 @@ public class AddIncidencia extends AppCompatActivity implements GoogleApiClient.
             }
         });
     hechoFoto = false;
-            Toast.makeText(getApplicationContext(),getResources().getString(R.string.incidenciaSend),Toast.LENGTH_SHORT).show();
+
     }
         else {
             Toast.makeText(getApplicationContext(),getResources().getString(R.string.faltanCampos),Toast.LENGTH_SHORT).show();
