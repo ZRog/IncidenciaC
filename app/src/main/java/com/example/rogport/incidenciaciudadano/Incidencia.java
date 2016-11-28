@@ -3,6 +3,9 @@ package com.example.rogport.incidenciaciudadano;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by RogPort on 20/11/2016.
  */
@@ -12,6 +15,7 @@ public class Incidencia {
     private int id,likes;
     private String imagen;
     private String ubicacion,descripcion;
+    private List<String> tokens = new ArrayList<String>();
 
     public Incidencia(int id, String imagen, String ubi, String desc) {
         this.id = id;
@@ -19,6 +23,17 @@ public class Incidencia {
         this.ubicacion = ubi;
         this.descripcion = desc;
         this.likes = 0;
+        this.tokens.add("");
+        this.tokens.add("");
+        this.tokens.add("");
+    }
+
+    public List<String> getTokens() {
+        return tokens;
+    }
+
+    public void setTokens(List<String> tokens) {
+        this.tokens = tokens;
     }
 
     public int getLikes() {

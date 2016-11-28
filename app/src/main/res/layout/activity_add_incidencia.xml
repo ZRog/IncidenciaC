@@ -36,15 +36,27 @@
                 android:src="@drawable/camara"
                 android:layout_gravity="center"
                 android:id="@+id/tomarFoto"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_gravity="center">
             <EditText
                 android:id="@+id/input_ubicacion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="@string/ubicacionIncidencia"
-                android:layout_gravity="center"
                 android:layout_marginTop="20dp"
                 android:inputType="textLongMessage"
                 />
+                <Button
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:theme="@style/BotonRaised"
+                    android:onClick="obtenerUbi"/>
+            </LinearLayout>
 
             <EditText
                 android:id="@+id/input_descripcion"

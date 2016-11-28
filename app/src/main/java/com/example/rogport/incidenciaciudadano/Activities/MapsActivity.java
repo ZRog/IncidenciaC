@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.rogport.incidenciaciudadano.Mail.Config;
 import com.example.rogport.incidenciaciudadano.R;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -151,14 +152,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onConnected(Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            ultimaLoc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApi);
+            ultimaLoc = obtenerLocal();
             if(ultimaLoc != null) {
                 double latitude = ultimaLoc.getLatitude();
                 double longitude = ultimaLoc.getLongitude();
@@ -191,4 +185,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         finish();
         startActivity(refresco);
     }
+
+    public Location obtenerLocal(){
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            ultimaLoc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApi);
+        }
+        return ultimaLoc;
+    }
+
 }
