@@ -14,10 +14,11 @@ public class Incidencia {
 
     private int id,likes;
     private String imagen;
-    private String ubicacion,descripcion;
+    private String ubicacion,descripcion,fecha;
     private List<String> tokens = new ArrayList<String>();
+    private List<Double> latlon = new ArrayList<Double>();
 
-    public Incidencia(int id, String imagen, String ubi, String desc) {
+    public Incidencia(int id, String imagen, String ubi, String desc,List<Double> latlon, String dia) {
         this.id = id;
         this.imagen = imagen;
         this.ubicacion = ubi;
@@ -26,6 +27,24 @@ public class Incidencia {
         this.tokens.add("");
         this.tokens.add("");
         this.tokens.add("");
+        this.latlon = latlon;
+        this.fecha = dia;
+    }
+
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
+    public List<Double> getLatlon() {
+        return latlon;
+    }
+
+    public void setLatlon(List<Double> latlon) {
+        this.latlon = latlon;
     }
 
     public List<String> getTokens() {

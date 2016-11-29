@@ -59,7 +59,10 @@
         <activity
             android:name=".Activities.Reporte"
             android:parentActivityName=".Activities.ListaIncidencias" />
-        <activity android:name=".Activities.ListaIncidencias"
+        <activity
+            android:name=".Activities.ListaIncidencias"
+            android:parentActivityName=".Activities.MapsActivity" />
+        <activity android:name=".Activities.Contacta"
             android:parentActivityName=".Activities.MapsActivity"></activity>
     </application>
 

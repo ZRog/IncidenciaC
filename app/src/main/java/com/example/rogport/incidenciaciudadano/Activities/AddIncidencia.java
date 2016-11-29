@@ -48,6 +48,9 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 public class AddIncidencia extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -56,11 +59,11 @@ public class AddIncidencia extends AppCompatActivity implements GoogleApiClient.
     EditText ubicacion, descripcion;
     public static final int REQUEST_CAPTURE = 1;
     private DatabaseReference mDatabase;
-    private String url;
+    private String url,city,ubiBuena;
     private boolean hechoFoto = false, calleInv = false;
     GoogleApiClient mGoogleApiClient;
     Geocoder geocoder;
-    private String city;
+    private Double lat,lon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,7 +184,22 @@ public class AddIncidencia extends AppCompatActivity implements GoogleApiClient.
                         }
 
                         if(!calleInv) {
-                            Incidencia incidencia = new Incidencia(ID, url, ubicacion.getText().toString(), descripcion.getText().toString());
+                            try {
+                                lat = geocoder.getFromLocationName(ubicacion.getText().toString() + ", " + city,1).get(0).getLatitude();
+                                lon = geocoder.getFromLocationName(ubicacion.getText().toString() + ", " + city,1).get(0).getLongitude();
+                                ubiBuena = geocoder.getFromLocationName(ubicacion.getText().toString() + ", " + city,1).get(0).getAddressLine(0);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            List<Double> listaTemp = new ArrayList<Double>();
+                            listaTemp.add(lat);
+                            listaTemp.add(lon);
+                            Calendar calendar = Calendar.getInstance();
+                            String mes = String.valueOf(calendar.get(Calendar.MONTH));
+                            String dia = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+                            String year = String.valueOf(calendar.get(Calendar.YEAR));
+                            Incidencia incidencia = new Incidencia(ID, url, ubiBuena, descripcion.getText().toString(),listaTemp,dia+"/"+mes+"/"+year);
+                            Log.d("AVISOINC",incidencia.getFecha() + "no null");
                             mDatabase.child("Incidencias").child(String.valueOf(ID)).setValue(incidencia);
                             mDatabase.child("ID").setValue(ID + 1);
                             mDatabase.child("size").setValue(size + 1);

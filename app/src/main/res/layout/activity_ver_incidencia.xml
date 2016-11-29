@@ -5,7 +5,8 @@
     android:id="@+id/activity_ver_incidencia"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.rogport.incidenciaciudadano.Activities.VerIncidencia">
+    tools:context="com.example.rogport.incidenciaciudadano.Activities.VerIncidencia"
+    android:background="@color/colorPrueba">
 
     <include android:id="@+id/app_bar"
         layout="@layout/app_bar"></include>
@@ -40,6 +41,8 @@
             android:text="@string/ubicacionIncidencia"
             android:layout_centerInParent="true"
             android:layout_below="@id/fotoIncidencia"
+            android:textStyle="bold"
+            android:textSize="15.5sp"
             />
         <TextView
             android:id="@+id/textoLocalizacion"
@@ -58,6 +61,8 @@
             android:layout_marginTop="20dp"
             android:layout_centerInParent="true"
             android:layout_below="@id/textoLocalizacion"
+            android:textStyle="bold"
+            android:textSize="15.5sp"
             />
         <TextView
             android:id="@+id/textoDescripcion"
@@ -77,7 +82,8 @@
             android:id="@+id/TextIncidencia"
             android:textColor="#80000f"
             android:layout_centerInParent="true"
-            android:layout_below="@id/textoDescripcion"/>
+            android:layout_below="@id/textoDescripcion"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tituloResuelta"

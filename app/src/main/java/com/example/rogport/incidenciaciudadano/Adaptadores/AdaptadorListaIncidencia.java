@@ -53,7 +53,7 @@ public class AdaptadorListaIncidencia extends RecyclerView.Adapter<AdaptadorList
                 .placeholder(R.mipmap.ic_launcher)
                 .into(holder.imgFoto);
         holder.txtUbicacion.setText(incidencia.getUbicacion());
-        holder.txtDescripcion.setText(incidencia.getDescripcion());
+        holder.txtDescripcion.setText(incidencia.getFecha());
         holder.panel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

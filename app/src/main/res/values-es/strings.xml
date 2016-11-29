@@ -14,4 +14,8 @@
     <string name="incidenciaSend">Su incidencia ha sido enviada</string>
     <string name="disteLike">Ya colaboraste con esta incidencia</string>
     <string name="calleInvalida">Calle erronea</string>
+    <string name="contacta">Contacta con nosotros</string>
+    <string name="listaIncidencias">Lista de Incidencias</string>
+    <string name="addIncidencia">Añadir Incidencia</string>
+    <string name="contactar">Contacta con nosotros</string>
 </resources>

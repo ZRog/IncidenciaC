@@ -83,22 +83,10 @@ public class ListaIncidencias extends AppCompatActivity {
                                     refIncidencia.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
-                                            if (dataSnapshot.getValue() != null) {
-                                                ubicacion = (String) dataSnapshot.child("ubicacion").getValue();
-                                                descripcion = (String) dataSnapshot.child("descripcion").getValue();
-                                                id = String.valueOf(dataSnapshot.child("id").getValue());
-                                                imagen = (String) dataSnapshot.child("imagen").getValue();
-                                                likes = Integer.parseInt(dataSnapshot.child("likes").getValue().toString());
-                                                Incidencia incidencia = new Incidencia();
-                                                incidencia.setId(Integer.parseInt(id));
-                                                incidencia.setImagen(imagen);
-                                                incidencia.setDescripcion(descripcion);
-                                                incidencia.setUbicacion(ubicacion);
-                                                incidencia.setLikes(likes);
 
-                                                incidencias.add(incidencia);
-                                                inicializarAdaptador();
-                                            }
+                                            Incidencia incTemp = dataSnapshot.getValue(Incidencia.class);
+                                            incidencias.add(incTemp);
+                                            inicializarAdaptador();
                                         }
 
                                         @Override

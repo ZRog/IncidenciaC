@@ -13,4 +13,8 @@
     <string name="incidenciaSend">Your incidence has been sended</string>
     <string name="disteLike">You already colaborated on this incidence</string>
     <string name="calleInvalida">Wrong street</string>
+    <string name="contacta">Contact with us</string>
+    <string name="listaIncidencias">Incidence List</string>
+    <string name="addIncidencia">Add Incidence</string>
+    <string name="contactar">Contact with us</string>
 </resources>

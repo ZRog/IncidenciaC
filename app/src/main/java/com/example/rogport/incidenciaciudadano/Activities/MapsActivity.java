@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.rogport.incidenciaciudadano.Incidencia;
 import com.example.rogport.incidenciaciudadano.Mail.Config;
 import com.example.rogport.incidenciaciudadano.R;
 import com.google.android.gms.appindexing.Action;
@@ -30,12 +31,21 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApi;
     private Location ultimaLoc;
+    private ArrayList<Incidencia> incidencias;
+    private int ID;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -59,6 +69,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+
+        incidencias = new ArrayList<>();
+        DatabaseReference refID = FirebaseDatabase.getInstance().getReference("ID");
+        refID.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ID = Integer.parseInt(dataSnapshot.getValue().toString());
+                        DatabaseReference refIncidencias = FirebaseDatabase.getInstance().getReference("Incidencias");
+                        for (int i = 0; i < ID; i++) {
+                            DatabaseReference refIncidencia = refIncidencias.child(String.valueOf(i));
+                            refIncidencia.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if(dataSnapshot.getValue() != null) {
+                                        Incidencia incTemp = dataSnapshot.getValue(Incidencia.class);
+                                        incidencias.add(incTemp);
+                                        añadirMarca(incTemp.getLatlon().get(0),incTemp.getLatlon().get(1),incTemp.getUbicacion());
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -81,6 +124,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     case R.id.ListaIncidencia:
                         Intent i3 = new Intent(MapsActivity.this, ListaIncidencias.class);
                         startActivity(i3);
+                        break;
+                    case R.id.Contacta:
+                        Intent i1 = new Intent(MapsActivity.this, Contacta.class);
+                        startActivity(i1);
                         break;
                 }
                 return true;
@@ -149,6 +196,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         client.disconnect();
     }
 
+    public void añadirMarca(Double la, Double lo, String calle){
+        mMap.addMarker(new MarkerOptions().position(new LatLng(la,lo)).title(calle));
+
+    }
     @Override
     public void onConnected(Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -158,7 +209,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 double longitude = ultimaLoc.getLongitude();
                 LatLng posicion = new LatLng(latitude, longitude);
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(posicion));
-                mMap.addMarker(new MarkerOptions().position(posicion).title("YOU ARE HERE, WE NOT"));
+                for(int i=0;i<incidencias.size();i++){
+                    mMap.addMarker(new MarkerOptions().position(new LatLng(incidencias.get(i).getLatlon().get(0),incidencias.get(i).getLatlon().get(1))).title("MARCA"));
+                }
             }
             else{
                 Toast.makeText(getApplicationContext(),"Imposible to connect",Toast.LENGTH_LONG).show();
