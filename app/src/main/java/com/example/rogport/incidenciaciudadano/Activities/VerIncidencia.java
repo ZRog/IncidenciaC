@@ -120,6 +120,7 @@ public class VerIncidencia extends AppCompatActivity {
                         refTokens.setValue(listaTemp);
                         DatabaseReference refL = refID.child("likes");
                         refL.setValue(likes + 1);
+                        Toast.makeText(getApplicationContext(),getResources().getString(R.string.gracias),Toast.LENGTH_SHORT).show();
                         if(likes >= 2) {
                             refID.removeValue();
                             refSize.setValue(size-1);
