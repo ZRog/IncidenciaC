@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">IncidenciaCiudadano</string>
+    <string name="app_name">La Incidencia del Ciudadano</string>
     <string name="title_activity_maps">Map</string>
     <string name="ubicacionIncidencia">Ubicación de la incidencia</string>
     <string name="descripcionProblema">Descripción de la incidencia</string>

@@ -10,7 +10,8 @@
     <RelativeLayout android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:id="@+id/panelCV"
-        android:background="@color/colorPrueba">
+        android:background="@color/colorPrueba"
+        android:transitionName="pruebaTransicion">
         <ImageView android:layout_height="115dp"
             android:layout_width="115dp"
             android:src="@mipmap/ic_launcher"

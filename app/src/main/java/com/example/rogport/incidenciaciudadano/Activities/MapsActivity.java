@@ -6,12 +6,15 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.multidex.MultiDex;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -30,6 +33,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -56,7 +60,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(com.example.rogport.incidenciaciudadano.R.layout.activity_maps);
+        setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -85,7 +89,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     if(dataSnapshot.getValue() != null) {
                                         Incidencia incTemp = dataSnapshot.getValue(Incidencia.class);
                                         incidencias.add(incTemp);
-                                        añadirMarca(incTemp.getLatlon().get(0),incTemp.getLatlon().get(1),incTemp.getUbicacion());
+                                        añadirMarca(incTemp.getLatlon().get(0),incTemp.getLatlon().get(1),incTemp.getId());
                                     }
                                 }
 
@@ -95,6 +99,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 }
                             });
                         }
+                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        DatabaseReference refInc = FirebaseDatabase.getInstance().getReference("Incidencias").child(String.valueOf((int)marker.getZIndex()));
+                        refInc.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Incidencia inctemp=dataSnapshot.getValue(Incidencia.class);
+                                Intent i = new Intent(MapsActivity.this,VerIncidencia.class);
+                                i.putExtra("imagen",inctemp.getImagen());
+                                i.putExtra("id",inctemp.getId());
+                                i.putExtra("ubicacion",inctemp.getUbicacion());
+                                i.putExtra("descripcion",inctemp.getDescripcion());
+                                i.putExtra("likes",inctemp.getLikes());
+                                startActivity(i);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        return false;
+                    }
+                });
             }
 
             @Override
@@ -102,6 +132,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
+
     }
 
     @Override
@@ -196,9 +227,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         client.disconnect();
     }
 
-    public void añadirMarca(Double la, Double lo, String calle){
-        mMap.addMarker(new MarkerOptions().position(new LatLng(la,lo)).title(calle));
-
+    public void añadirMarca(Double la, Double lo, int id){
+        mMap.addMarker(new MarkerOptions().position(new LatLng(la,lo)).zIndex((float)id));
     }
     @Override
     public void onConnected(Bundle bundle) {

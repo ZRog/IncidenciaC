@@ -5,12 +5,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.transition.CircularPropagation;
+import android.transition.Explode;
+import android.transition.Slide;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -46,7 +53,7 @@ public class AdaptadorListaIncidencia extends RecyclerView.Adapter<AdaptadorList
     }
 
     @Override
-    public void onBindViewHolder(IncidenciaViewHolder holder, int position) {
+    public void onBindViewHolder(final IncidenciaViewHolder holder, int position) {
         final Incidencia incidencia = incidencias.get(position);
         Picasso.with(activity)
                 .load(incidencia.getImagen())
@@ -58,13 +65,19 @@ public class AdaptadorListaIncidencia extends RecyclerView.Adapter<AdaptadorList
             @Override
             public void onClick(View view) {
                VerIncidencia.idImagen = Uri.parse(incidencia.getImagen());
-                Intent i = new Intent(cont, VerIncidencia.class);
+                Intent i = new Intent(activity, VerIncidencia.class);
                 i.putExtra("imagen",incidencia.getImagen());
                 i.putExtra("id",incidencia.getId());
                 i.putExtra("ubicacion",incidencia.getUbicacion());
                 i.putExtra("descripcion",incidencia.getDescripcion());
                 i.putExtra("likes",incidencia.getLikes());
-               cont.startActivity(i);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    activity.getWindow().setExitTransition(new Slide(Gravity.RIGHT));
+                    activity.startActivity(i, ActivityOptionsCompat.makeSceneTransitionAnimation(activity,view, "pruebaTransicion").toBundle());
+                }
+                else{
+                    cont.startActivity(i);
+                }
             }
         });
     }

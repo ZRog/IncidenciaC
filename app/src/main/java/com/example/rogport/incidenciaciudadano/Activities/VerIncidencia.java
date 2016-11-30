@@ -3,10 +3,15 @@ package com.example.rogport.incidenciaciudadano.Activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.transition.Explode;
+import android.transition.Fade;
+import android.transition.Slide;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -37,7 +42,16 @@ public class VerIncidencia extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setExitTransition(new Slide(Gravity.RIGHT));
+        }
+
+
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+
+
         setContentView(R.layout.activity_ver_incidencia);
 
         TVdescripcion = (TextView) findViewById(R.id.textoDescripcion);
@@ -59,6 +73,7 @@ public class VerIncidencia extends AppCompatActivity {
 
         Toolbar appbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(appbar);
+
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -72,7 +87,7 @@ public class VerIncidencia extends AppCompatActivity {
                Intent i = new Intent(VerIncidencia.this, Reporte.class);
                 i.putExtra("ID",ID);
                 i.putExtra("Ubicacion",ubicacion);
-               startActivity(i);
+                startActivity(i, ActivityOptionsCompat.makeSceneTransitionAnimation(VerIncidencia.this,view, "").toBundle());
             }
         });
     }

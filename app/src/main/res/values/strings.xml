@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">IncidenciaCiudadano</string>
+    <string name="app_name">The Incidence of the Citizen</string>
     <string name="title_activity_maps">Map</string>
     <string name="ubicacionIncidencia">Location of the Incidence</string>
     <string name="descripcionProblema">Description of the Problem</string>

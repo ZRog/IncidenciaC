@@ -39,6 +39,7 @@ public class ListaIncidencias extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         setContentView(R.layout.activity_lista_incidencias);
 
         incidencias = new ArrayList<>();
