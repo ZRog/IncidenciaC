@@ -118,11 +118,6 @@ public class AddIncidencia extends AppCompatActivity implements GoogleApiClient.
             Location ultimaLoc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             String Calle = geocoder.getFromLocation(ultimaLoc.getLatitude(), ultimaLoc.getLongitude(), 1).get(0).getAddressLine(0).toString();
             ubicacion.setText(Calle);
-            //LatLng latlong = new LatLng(geocoder.getFromLocationName("Carrer Cervantes,Badalona",1).get(0).getLatitude(),geocoder.getFromLocationName("Carrer Cervantes,Badalona",1).get(0).getLongitude());
-
-            //Calle = String.valueOf(geocoder.getFromLocationName("Carrer Cervantes,Badalona",1).get(0).getLatitude());
-            //Calle = String.valueOf(geocoder.getFromLocationName("Carrer Cervantes,Badalona",1).get(0).getLongitude());
-
         }
 
     }

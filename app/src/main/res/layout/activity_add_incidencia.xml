@@ -55,7 +55,11 @@
                     android:layout_marginTop="10dp"
                     android:layout_gravity="center_vertical"
                     android:theme="@style/BotonRaised"
-                    android:onClick="obtenerUbi"/>
+                    android:onClick="obtenerUbi"
+                    android:background="@drawable/add_location"
+                    
+                    />
+
             </LinearLayout>
 
             <EditText
